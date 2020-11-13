@@ -1,4 +1,4 @@
-# Planarity Test
+# Covid 19 Visualization
 
 ## Run
 
