@@ -177,7 +177,6 @@ document.getElementById('SortableBarChart').onclick = function() {
   SortableBarChart();
 };
 document.getElementById('BarChartOrder').onchange = function(event) {
-  console.log(event.target.value);
   let order_str = event.target.value;
   let order = (x, y) => x.name < y.name ? -1 : 1;
   if(order_str === 'value increasing') {

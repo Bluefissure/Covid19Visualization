@@ -4,6 +4,7 @@ import {data as rawdata} from '../data/data.js';
 let barCharTicker =  null;
 
 function BarChartRace() {
+  document.getElementById("BarChartRaceSource").removeAttribute("hidden");
   let svg = d3.select('svg');
   svg.selectAll('*').remove();
   svg.innerHTML = '';
@@ -11,11 +12,11 @@ function BarChartRace() {
   let margin = {top: 16, right: 6, bottom: 6, left: 200};
   let barSize = 48;
   let names = Object.keys(rawdata);
-  let source = urlParam('source', 'confirmed');
-  if (source != 'confirmed' && source != 'deaths' && source != 'recorvered') {
+  let source = document.getElementById("BarChartRaceSource").value;
+  if (source != 'confirmed' && source != 'deaths' && source != 'recovered') {
     source = 'confirmed';
   }
-  console.log(rawdata);
+  // console.log(rawdata);
   let data = [];
   for(let [country, entries] of Object.entries(rawdata)){
     for(let entry of entries){
@@ -181,11 +182,15 @@ function BarChartRace() {
       if(keyframe === undefined) Ticker.stop();
       
       x.domain([0, keyframe[1][0].value]);
-    
-      updateAxis(keyframe, transition);
-      updateBars(keyframe, transition);
-      updateLabels(keyframe, transition);
-      updateTicker(keyframe, transition);
+      try{
+        updateAxis(keyframe, transition);
+        updateBars(keyframe, transition);
+        updateLabels(keyframe, transition);
+        updateTicker(keyframe, transition);
+      }catch(err){
+        console.error(err);
+        Ticker.stop();
+      }
       if(keyframe_idx == keyframes.length - 1) Ticker.stop();
       keyframe_idx += speed;
       if(keyframe_idx > keyframes.length) keyframe_idx = keyframes.length - 1;
@@ -194,7 +199,11 @@ function BarChartRace() {
   barCharTicker(7);
 }
 
-BarChartRace();
 document.getElementById('BarChartRace').onclick = function() {
+  HideAllConfigs();
+  BarChartRace();
+};
+
+document.getElementById('BarChartRaceSource').onchange = function(event) {
   BarChartRace();
 };

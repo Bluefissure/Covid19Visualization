@@ -1,9 +1,9 @@
 {
-  "name": "PlanarityTest",
+  "name": "Covid19Visualization",
   "license": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bluefissure/PlanarityTest"
+    "url": "https://github.com/Bluefissure/Covid19Visualization"
   },
   "scripts": {
     "lint": "node_modules/.bin/eslint js",
@@ -117,7 +117,7 @@
       ]
     },
     "parserOptions": {
-        "sourceType": "module"
+      "sourceType": "module"
     }
   }
 }

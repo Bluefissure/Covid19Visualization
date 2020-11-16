@@ -11,21 +11,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"
         integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU=" crossorigin="anonymous"></script>
     <script src="js/lib/d3.v6.min.js"></script>
+    <script src="js/lib/topojson-client.min.js"></script>
     <script src="js/lib/jquery-3.4.0.min.js"></script>
     <script src="js/lib/popper.min.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/custom.js"></script>
     <script type="module" src="js/barchart.js"></script>
+    <script type="module" src="js/linechart.js"></script>
     <script type="module" src="js/barchartrace.js"></script>
+    <script type="module" src="js/geomap.js"></script>
     <link rel="stylesheet" href="css/multilingual.css">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-138420636-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-138420636-1');
-    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -44,10 +39,16 @@
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link en" href="#" id="SortableBarChart">SortableBarChart</a>
+                    <a class="nav-link en" href="#" id="SortableBarChart">Sortable Bar Chart</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link en" href="#" id="BarChartRace">BarChartRace</a>
+                    <a class="nav-link en" href="#" id="LineChart">Trend</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="BarChartRace">Race</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="GeoMap">Map</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
@@ -71,6 +72,18 @@
                     <option value="value increasing"> value increasing </option>
                     <option value="value decreasing"> value decreasing </option>
                 </select>
+                <select id="BarChartRaceSource" hidden="">
+                    <option value="comfirmed"> Comfirmed </option>
+                    <option value="deaths"> Deaths </option>
+                    <option value="recovered"> Recovered </option>
+                </select>
+                <select id="GeoMapSource" hidden="">
+                    <option value="comfirmed"> Comfirmed </option>
+                    <option value="deaths"> Deaths </option>
+                    <option value="recovered"> Recovered </option>
+                </select>
+                <select id="LineChartSource" hidden="">
+                </select>
             </div>
         </div>
         <div id="editor-wrapper" class="">
@@ -81,8 +94,8 @@
     <hr />
     <div class="row col-12 page-footer">
         <div class="col-12 text-center en">
-            <p>Last update: 2020/11/12, <a href="https://github.com/Bluefissure/Covid19Visualization/">Github</a></p>
-            <p>Powered by Yupeng Zhang(yz936).</p>
+            <p>Last update: 2020/11/15, <a href="https://github.com/Bluefissure/Covid19Visualization/">Github</a></p>
+            <p>Powered by <a href="https://d3js.org/">D3.js</a>.</p>
         </div>
     </div>
     <script type="text/javascript">
@@ -98,7 +111,15 @@
             } else {
                 document.getElementById("SortableBarChart").removeAttribute("hidden");
             }
+            HideAllConfigs();
+            document.getElementById('GeoMap').click();
         });
+        function HideAllConfigs() {
+            document.getElementById("BarChartOrder").setAttribute("hidden", "");
+            document.getElementById("BarChartRaceSource").setAttribute("hidden", "");
+            document.getElementById("GeoMapSource").setAttribute("hidden", "");
+            document.getElementById("LineChartSource").setAttribute("hidden", "");
+        }
         function source2md(text) {
             var converter = new showdown.Converter({ tables: true });
             var mdhtml = converter.makeHtml(text);
