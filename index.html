@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh-Hans" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Covid 19 Visualization</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"
+        integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU=" crossorigin="anonymous"></script>
+    <script src="js/lib/d3.v6.min.js"></script>
+    <script src="js/lib/topojson-client.min.js"></script>
+    <script src="js/lib/jquery-3.4.0.min.js"></script>
+    <script src="js/lib/popper.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script type="module" src="js/barchart.js"></script>
+    <script type="module" src="js/linechart.js"></script>
+    <script type="module" src="js/barchartrace.js"></script>
+    <script type="module" src="js/geomap.js"></script>
+    <link rel="stylesheet" href="css/multilingual.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand en" href="#">Covid 19 Visualization</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Expand">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="SortableBarChart">Sortable Bar Chart</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="LineChart">Trend</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="BarChartRace">Race</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link en" href="#" id="GeoMap">Map</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="switchLang" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Language
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="?lang=en">English</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div style="margin:auto;width:100%;">
+        <div class="row col-12 ">
+            <div class="col-12 text-center en">
+                <select id="BarChartOrder" hidden="">
+                    <option value="alphabetical"> alphabetical </option>
+                    <option value="value increasing"> value increasing </option>
+                    <option value="value decreasing"> value decreasing </option>
+                </select>
+                <select id="BarChartRaceSource" hidden="">
+                    <option value="comfirmed"> Comfirmed </option>
+                    <option value="deaths"> Deaths </option>
+                    <option value="recovered"> Recovered </option>
+                </select>
+                <select id="GeoMapSource" hidden="">
+                    <option value="comfirmed"> Comfirmed </option>
+                    <option value="deaths"> Deaths </option>
+                    <option value="recovered"> Recovered </option>
+                </select>
+                <select id="LineChartSource" hidden="">
+                </select>
+            </div>
+        </div>
+        <div id="editor-wrapper" class="">
+            <center><svg width="1280" height="780"></svg></center>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row col-12 page-footer">
+        <div class="col-12 text-center en">
+            <p>Last update: 2020/11/15, <a href="https://github.com/Bluefissure/Covid19Visualization/">Github</a></p>
+            <p>Powered by <a href="https://d3js.org/">D3.js</a></p>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            let lang = getLang();
+            let initialized = false;
+            showCurrentLang();
+            document.title = {
+                "en": "Covid 19 Visualization"
+            }[lang];
+            if (!isDebug()) {
+                document.getElementById("SortableBarChart").setAttribute("hidden", "");
+            } else {
+                document.getElementById("SortableBarChart").removeAttribute("hidden");
+            }
+            HideAllConfigs();
+            document.getElementById('LineChart').click();
+        });
+        function HideAllConfigs() {
+            document.getElementById("BarChartOrder").setAttribute("hidden", "");
+            document.getElementById("BarChartRaceSource").setAttribute("hidden", "");
+            document.getElementById("GeoMapSource").setAttribute("hidden", "");
+            document.getElementById("LineChartSource").setAttribute("hidden", "");
+        }
+        function source2md(text) {
+            var converter = new showdown.Converter({ tables: true });
+            var mdhtml = converter.makeHtml(text);
+            return mdhtml;
+        }
+        function convert() {
+            var text = document.getElementById("oritextarea").value;
+            document.getElementById("preview").innerHTML = source2md(text);
+            document.getElementById("ngatextarea").value = md2nga(text);
+        }
+    </script>
+</body>
+
+</html>
